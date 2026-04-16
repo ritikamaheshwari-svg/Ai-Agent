@@ -2,6 +2,7 @@ import axios from "axios"
 import Signal from "../models/Signal"
 import Transaction from "../models/Transaction"
 import { deposit, withdraw } from "../services/vaultService"
+import { calculateTradeSize } from "./riskEngine"
 
 const lastPrices: Record<string, number> = {}
 
@@ -73,20 +74,25 @@ export const runMarketAgent = async () => {
         executed: false
       })
 
+      // ⭐ RISK ENGINE (dynamic trade size)
+      const tradeSize = calculateTradeSize(change)
+
+      console.log(`${asset} Trade size:`, tradeSize)
+
       // 5️⃣ execute vault transaction
       let txHash = ""
 
       if (action === "deposit") {
-        txHash = await deposit("0.01")
+        txHash = await deposit(tradeSize)
       } else {
-        txHash = await withdraw("0.01")
+        txHash = await withdraw(tradeSize)
       }
 
       // 6️⃣ store transaction
       await Transaction.create({
         asset,
         action,
-        amount: "0.01",
+        amount: tradeSize,
         txHash,
         status: "success"
       })
@@ -105,4 +111,4 @@ export const runMarketAgent = async () => {
 
   }
 
-}   
+}
