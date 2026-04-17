@@ -1,5 +1,5 @@
 import dotenv from "dotenv"
-import { ethers } from "ethers"
+import { ethers, NonceManager } from "ethers"
 
 dotenv.config()
 
@@ -19,10 +19,15 @@ const ABI = [
 
 const provider = new ethers.JsonRpcProvider(RPC_URL)
 
-const signer = new ethers.Wallet(PRIVATE_KEY, provider)
+// base wallet
+const wallet = new ethers.Wallet(PRIVATE_KEY, provider)
+
+// ⭐ FIX NONCE PROBLEM
+const signer = new NonceManager(wallet)
 
 export const vaultAddress = VAULT_ADDRESS
 export const vaultProvider = provider
+
 export const vaultContract = new ethers.Contract(
   VAULT_ADDRESS,
   ABI,
