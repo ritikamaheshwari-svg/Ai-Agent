@@ -15,7 +15,14 @@ export const useSignals = () => {
 
   useEffect(() => {
     fetchSignals()
+    
+    // Refresh signals every 10 seconds
+    const intervalId = setInterval(() => {
+      fetchSignals()
+    }, 10000)
+    
+    return () => clearInterval(intervalId)
   }, [])
 
-  return { signals, loading }
+  return { signals, loading, refetch: fetchSignals }
 }

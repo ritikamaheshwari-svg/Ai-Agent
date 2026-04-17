@@ -17,8 +17,15 @@ export const useTransactions = () => {
 
   useEffect(() => {
     fetchTransactions()
+
+    // Refresh transactions every 10 seconds
+    const intervalId = setInterval(() => {
+      fetchTransactions()
+    }, 10000)
+
+    return () => clearInterval(intervalId)
   }, [])
 
-  return { transactions, loading }
+  return { transactions, loading, refetch: fetchTransactions }
 
 }
