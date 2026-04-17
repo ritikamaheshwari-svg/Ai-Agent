@@ -1,0 +1,183 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.dash { background: #0d0f14; color: #e2e8f0; font-family: var(--font-sans); min-height: 600px; border-radius: 14px; overflow: hidden; }
+
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; border-bottom: 0.5px solid #1e2330; background: #111318; }
+.logo { font-size: 14px; font-weight: 500; color: #e2e8f0; display: flex; align-items: center; gap: 8px; }
+.logo-dot { width: 8px; height: 8px; border-radius: 50%; background: #00d4aa; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.ticker { display: flex; gap: 20px; }
+.tick { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.tick-sym { color: #5a6480; }
+.tick-price { color: #e2e8f0; font-weight: 500; }
+.up { color: #00d4aa; }
+.dn { color: #ff6b6b; }
+
+.body { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+
+.bal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.bal-card { background: #111318; border: 0.5px solid #1e2330; border-radius: 12px; padding: 18px 20px; }
+.bal-label { font-size: 10px; color: #5a6480; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.bal-val { font-size: 22px; font-weight: 500; color: #e2e8f0; }
+.bal-sub { font-size: 11px; color: #3a4460; margin-top: 4px; font-family: var(--font-mono); }
+
+.assets-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.asset-card { background: #111318; border: 0.5px solid #1e2330; border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+.a-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; flex-shrink: 0; }
+.a-icon.sol { background: #180f2a; color: #9945ff; border: 0.5px solid #9945ff33; }
+.a-icon.btc { background: #1a1100; color: #f7931a; border: 0.5px solid #f7931a33; }
+.a-icon.eth { background: #0a1020; color: #627eea; border: 0.5px solid #627eea33; }
+.a-name { font-size: 12px; font-weight: 500; color: #c8d0e0; }
+.a-ticker { font-size: 10px; color: #3a4460; }
+.a-right { margin-left: auto; text-align: right; }
+.a-price { font-size: 12px; font-weight: 500; color: #e2e8f0; }
+.a-chg { font-size: 11px; margin-top: 2px; }
+
+.card { background: #111318; border: 0.5px solid #1e2330; border-radius: 12px; overflow: hidden; }
+.card-head { padding: 12px 16px; border-bottom: 0.5px solid #1e2330; display: flex; align-items: center; justify-content: space-between; }
+.card-title { font-size: 10px; font-weight: 500; color: #5a6480; text-transform: uppercase; letter-spacing: 0.08em; }
+.live-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: #0a2a1f; color: #00d4aa; border: 0.5px solid #00d4aa33; display: flex; align-items: center; gap: 4px; }
+.live-dot { width: 5px; height: 5px; border-radius: 50%; background: #00d4aa; animation: pulse 2s infinite; }
+
+table { width: 100%; border-collapse: collapse; }
+th { font-size: 10px; color: #3a4460; text-transform: uppercase; letter-spacing: 0.07em; padding: 9px 16px; text-align: left; font-weight: 500; border-bottom: 0.5px solid #161c28; }
+td { padding: 10px 16px; font-size: 12px; color: #c8d0e0; border-bottom: 0.5px solid #111826; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #131924; }
+
+.pill { font-size: 10px; padding: 2px 8px; border-radius: 6px; font-weight: 500; display: inline-block; }
+.pill.deposit { background: #0a1828; color: #5aadff; }
+.pill.withdraw { background: #1a0f28; color: #c07aff; }
+
+.status { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; display: inline-block; }
+.status.executed, .status.success { background: #0a2a1f; color: #00d4aa; border: 0.5px solid #00d4aa22; }
+.status.pending { background: #1a1500; color: #f7c34a; border: 0.5px solid #f7c34a22; }
+
+.conf-wrap { display: flex; align-items: center; gap: 6px; }
+.conf-bar { width: 44px; height: 3px; background: #1e2330; border-radius: 2px; overflow: hidden; }
+.conf-fill { height: 100%; border-radius: 2px; background: #00d4aa; }
+.conf-fill.mid { background: #f7c34a; }
+</style>
+
+<div class="dash">
+  <div class="topbar">
+    <div class="logo"><span class="logo-dot"></span>Autonomous Vault</div>
+    <div class="ticker">
+      <div class="tick"><span class="tick-sym">SOL</span><span class="tick-price">$87.62</span><span class="up">+0.05%</span></div>
+      <div class="tick"><span class="tick-sym">BTC</span><span class="tick-price">$74,685</span><span class="dn">−0.01%</span></div>
+      <div class="tick"><span class="tick-sym">ETH</span><span class="tick-price">$2,321</span><span class="dn">−0.02%</span></div>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- Balances -->
+    <div class="bal-row">
+      <div class="bal-card">
+        <div class="bal-label">User Balance</div>
+        <div class="bal-val">9,999.81 ETH</div>
+        <div class="bal-sub">0x9999…7093</div>
+      </div>
+      <div class="bal-card">
+        <div class="bal-label">Vault Balance</div>
+        <div class="bal-val">0.195 ETH</div>
+        <div class="bal-sub">≈ $452.86 USD</div>
+      </div>
+    </div>
+
+    <!-- Assets -->
+    <div class="assets-row">
+      <div class="asset-card">
+        <div class="a-icon sol">SOL</div>
+        <div><div class="a-name">Solana</div><div class="a-ticker">SOL</div></div>
+        <div class="a-right"><div class="a-price">$87.62</div><div class="a-chg up">+0.05%</div></div>
+      </div>
+      <div class="asset-card">
+        <div class="a-icon btc">BTC</div>
+        <div><div class="a-name">Bitcoin</div><div class="a-ticker">BTC</div></div>
+        <div class="a-right"><div class="a-price">$74,685</div><div class="a-chg dn">−0.01%</div></div>
+      </div>
+      <div class="asset-card">
+        <div class="a-icon eth">ETH</div>
+        <div><div class="a-name">Ethereum</div><div class="a-ticker">ETH</div></div>
+        <div class="a-right"><div class="a-price">$2,321</div><div class="a-chg dn">−0.02%</div></div>
+      </div>
+    </div>
+
+    <!-- Transactions -->
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Transactions</span>
+        <span class="live-badge"><span class="live-dot"></span>Live</span>
+      </div>
+      <table>
+        <thead><tr><th>Asset</th><th>Action</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>SOL</td><td><span class="pill deposit">deposit</span></td><td>0.020</td><td><span class="status success">success</span></td></tr>
+          <tr><td>SOL</td><td><span class="pill withdraw">withdraw</span></td><td>0.005</td><td><span class="status success">success</span></td></tr>
+          <tr><td>BTC</td><td><span class="pill withdraw">withdraw</span></td><td>0.020</td><td><span class="status success">success</span></td></tr>
+          <tr><td>SOL</td><td><span class="pill withdraw">withdraw</span></td><td>0.005</td><td><span class="status success">success</span></td></tr>
+          <tr><td>SOL</td><td><span class="pill deposit">deposit</span></td><td>0.005</td><td><span class="status success">success</span></td></tr>
+          <tr><td>ETH</td><td><span class="pill deposit">deposit</span></td><td>0.020</td><td><span class="status success">success</span></td></tr>
+          <tr><td>BTC</td><td><span class="pill deposit">deposit</span></td><td>0.020</td><td><span class="status success">success</span></td></tr>
+          <tr><td>ETH</td><td><span class="pill deposit">deposit</span></td><td>0.020</td><td><span class="status success">success</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Signals -->
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Signals</span>
+        <span class="live-badge"><span class="live-dot"></span>Active</span>
+      </div>
+      <table>
+        <thead><tr><th>Asset</th><th>Action</th><th>Confidence</th><th>Price</th><th>Change</th><th>Reason</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>SOL</td><td><span class="pill deposit">deposit</span></td>
+            <td><div class="conf-wrap">0.83<div class="conf-bar"><div class="conf-fill" style="width:83%"></div></div></div></td>
+            <td>$87.61</td><td class="dn">−0.01%</td><td style="color:#3a4460;font-size:11px;">Price below threshold</td><td><span class="status executed">Executed</span></td>
+          </tr>
+          <tr>
+            <td>SOL</td><td><span class="pill withdraw">withdraw</span></td>
+            <td><div class="conf-wrap">0.88<div class="conf-bar"><div class="conf-fill" style="width:88%"></div></div></div></td>
+            <td>$87.67</td><td class="up">+0.05%</td><td style="color:#3a4460;font-size:11px;">Price above threshold</td><td><span class="status executed">Executed</span></td>
+          </tr>
+          <tr>
+            <td>SOL</td><td><span class="pill withdraw">withdraw</span></td>
+            <td><div class="conf-wrap">0.79<div class="conf-bar"><div class="conf-fill mid" style="width:79%"></div></div></div></td>
+            <td>$87.67</td><td class="up">+0.05%</td><td style="color:#3a4460;font-size:11px;">Price above threshold</td><td><span class="status pending">Pending</span></td>
+          </tr>
+          <tr>
+            <td>BTC</td><td><span class="pill withdraw">withdraw</span></td>
+            <td><div class="conf-wrap">0.93<div class="conf-bar"><div class="conf-fill" style="width:93%"></div></div></div></td>
+            <td>$74,685</td><td class="dn">−0.01%</td><td style="color:#3a4460;font-size:11px;">Price above threshold</td><td><span class="status executed">Executed</span></td>
+          </tr>
+          <tr>
+            <td>SOL</td><td><span class="pill deposit">deposit</span></td>
+            <td><div class="conf-wrap">0.97<div class="conf-bar"><div class="conf-fill" style="width:97%"></div></div></div></td>
+            <td>$87.62</td><td class="up">+0.06%</td><td style="color:#3a4460;font-size:11px;">Price above threshold</td><td><span class="status executed">Executed</span></td>
+          </tr>
+          <tr>
+            <td>ETH</td><td><span class="pill deposit">deposit</span></td>
+            <td><div class="conf-wrap">0.83<div class="conf-bar"><div class="conf-fill" style="width:83%"></div></div></div></td>
+            <td>$2,321.83</td><td class="dn">−0.02%</td><td style="color:#3a4460;font-size:11px;">Price below threshold</td><td><span class="status executed">Executed</span></td>
+          </tr>
+          <tr>
+            <td>ETH</td><td><span class="pill deposit">deposit</span></td>
+            <td><div class="conf-wrap">0.92<div class="conf-bar"><div class="conf-fill mid" style="width:92%"></div></div></div></td>
+            <td>$2,321.83</td><td class="dn">−0.03%</td><td style="color:#3a4460;font-size:11px;">Price below threshold</td><td><span class="status pending">Pending</span></td>
+          </tr>
+          <tr>
+            <td>BTC</td><td><span class="pill deposit">deposit</span></td>
+            <td><div class="conf-wrap">0.97<div class="conf-bar"><div class="conf-fill" style="width:97%"></div></div></div></td>
+            <td>$74,654</td><td class="dn">−0.02%</td><td style="color:#3a4460;font-size:11px;">Price below threshold</td><td><span class="status executed">Executed</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>

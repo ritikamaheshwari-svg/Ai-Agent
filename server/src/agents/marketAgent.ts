@@ -1,6 +1,7 @@
 import axios from "axios"
 import Signal from "../models/Signal"
 import Transaction from "../models/Transaction"
+import { addToQueue } from "../utils/txQueue"
 import { deposit, withdraw } from "../services/vaultService"
 import { calculateTradeSize } from "./riskEngine"
 
@@ -80,29 +81,38 @@ export const runMarketAgent = async () => {
       console.log(`${asset} Trade size:`, tradeSize)
 
       // 5️⃣ execute vault transaction
-      let txHash = ""
+      addToQueue(async () => {
 
-      if (action === "deposit") {
-        txHash = await deposit(tradeSize)
-      } else {
-        txHash = await withdraw(tradeSize)
-      }
+  try {
 
-      // 6️⃣ store transaction
-      await Transaction.create({
-        asset,
-        action,
-        amount: tradeSize,
-        txHash,
-        status: "success"
-      })
+    let txHash = ""
 
-      signal.executed = true
-      await signal.save()
+    if (action === "deposit") {
+      txHash = await deposit(tradeSize)
+    } else {
+      txHash = await withdraw(tradeSize)
+    }
 
-      console.log(`${asset} Transaction executed:`, txHash)
+    await Transaction.create({
+      asset,
+      action,
+      amount: tradeSize,
+      txHash,
+      status: "success"
+    })
 
-      lastPrices[asset] = currentPrice
+    signal.executed = true
+    await signal.save()
+
+    console.log(`${asset} Transaction executed:`, txHash)
+
+  } catch (err) {
+
+    console.error(`${asset} transaction failed`, err)
+
+  }
+
+})
     }
 
   } catch (error) {

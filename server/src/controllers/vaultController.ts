@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import * as vaultService from "../services/vaultService"
+import { getUserBalance } from "../services/vaultService"
 
 export const getBalance = async (req: Request, res: Response) => {
   const balance = await vaultService.getVaultBalance()
@@ -20,4 +21,17 @@ export const withdraw = async (req: Request, res: Response) => {
   const tx = await vaultService.withdraw(amount)
 
   res.json({ tx })
+}
+
+export const getWalletBalance = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const data = await getUserBalance()
+
+    res.json(data)
+  } catch (error: any) {
+    res.status(500).json({ error: error.message })
+  }
 }

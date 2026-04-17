@@ -1,6 +1,15 @@
+import dotenv from "dotenv"
 import { ethers } from "ethers"
 
-const VAULT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+dotenv.config()
+
+const VAULT_ADDRESS = process.env.VAULT_ADDRESS
+const RPC_URL = process.env.RPC_URL || "http://127.0.0.1:8545"
+const PRIVATE_KEY = process.env.PRIVATE_KEY
+
+if (!VAULT_ADDRESS || !PRIVATE_KEY) {
+  throw new Error("Missing VAULT_ADDRESS or PRIVATE_KEY in server/.env")
+}
 
 const ABI = [
   "function deposit() payable",
@@ -8,13 +17,12 @@ const ABI = [
   "function getVaultBalance() view returns (uint256)"
 ]
 
-const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545")
+const provider = new ethers.JsonRpcProvider(RPC_URL)
 
-const signer = new ethers.Wallet(
-  "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
-  provider
-)
+const signer = new ethers.Wallet(PRIVATE_KEY, provider)
 
+export const vaultAddress = VAULT_ADDRESS
+export const vaultProvider = provider
 export const vaultContract = new ethers.Contract(
   VAULT_ADDRESS,
   ABI,
