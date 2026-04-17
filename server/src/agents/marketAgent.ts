@@ -83,36 +83,36 @@ export const runMarketAgent = async () => {
       // 5️⃣ execute vault transaction
       addToQueue(async () => {
 
-  try {
+        try {
 
-    let txHash = ""
+          let txHash = ""
 
-    if (action === "deposit") {
-      txHash = await deposit(tradeSize)
-    } else {
-      txHash = await withdraw(tradeSize)
-    }
+          if (action === "deposit") {
+            txHash = await deposit(tradeSize)
+          } else {
+            txHash = await withdraw(tradeSize)
+          }
 
-    await Transaction.create({
-      asset,
-      action,
-      amount: tradeSize,
-      txHash,
-      status: "success"
-    })
+          await Transaction.create({
+            asset,
+            action,
+            amount: tradeSize,
+            txHash,
+            status: "success"
+          })
 
-    signal.executed = true
-    await signal.save()
+          signal.executed = true
+          await signal.save()
 
-    console.log(`${asset} Transaction executed:`, txHash)
+          console.log(`${asset} Transaction executed:`, txHash)
 
-  } catch (err) {
+        } catch (err) {
 
-    console.error(`${asset} transaction failed`, err)
+          console.error(`${asset} transaction failed`, err)
 
-  }
+        }
 
-})
+      })
     }
 
   } catch (error) {

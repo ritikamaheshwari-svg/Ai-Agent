@@ -1,18 +1,27 @@
 const queue: (() => Promise<void>)[] = []
+
 let processing = false
 
-export const addToQueue = (txFn: () => Promise<void>) => {
-  queue.push(txFn)
+export const addToQueue = (task: () => Promise<void>) => {
+  queue.push(task)
   processQueue()
 }
 
 const processQueue = async () => {
   if (processing) return
+
   processing = true
 
   while (queue.length > 0) {
-    const tx = queue.shift()
-    if (tx) await tx()
+    const job = queue.shift()
+
+    if (job) {
+      try {
+        await job()
+      } catch (err) {
+        console.error("Queue tx error:", err)
+      }
+    }
   }
 
   processing = false
